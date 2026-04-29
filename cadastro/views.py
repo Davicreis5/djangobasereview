@@ -102,3 +102,4 @@ def contato(request):
     else:
         form = ContatoForm()
     return render(request, 'cadastro/contato.html', {'form': form})
+
