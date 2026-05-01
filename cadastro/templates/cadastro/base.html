@@ -13,13 +13,15 @@
 
     <div class="stars"></div>
 
-    <header>
-        <h1>{{ sitename }}</h1>
-    </header>
-
+    
     <hr>
 
     <nav>
+        <a href="{% url 'index' %}">
+        
+
+                <img src="{% static 'cadastro/img/logo.png' %}" alt="Logo" width="100"></a>
+
         <a href="{% url 'index' %}">Início</a> |&nbsp;
         <a href="{% url 'contato' %}">Contato</a> |&nbsp;
 
@@ -37,6 +39,9 @@
         {% endif %}
 
         <button onclick="toggleDarkMode()" id="themeBtn" class="theme-toggle">🌙</button>
+
+
+    
     </nav>
 
     <hr>

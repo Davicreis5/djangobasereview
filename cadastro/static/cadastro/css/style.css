@@ -3,12 +3,18 @@ cadastro\static\cadastro\style.css
 folhas de estilo globais
 */
 
+
+html {
+    height: 100%;
+}
+
 body {
     font-family: Arial, sans-serif;
     max-width: 800px;
     margin: 0 auto;
     padding: 20px;
-    background: linear-gradient(135deg, #ffffff, #867e7e)
+    background: linear-gradient(135deg, #ffffff, #867e7e);
+    height: 100%;
 }
 
 nav {
@@ -22,6 +28,16 @@ nav a {
     color: white;
     text-decoration: none;
     margin-right: 10px;
+}
+
+nav img {
+    vertical-align: middle;
+    margin-right: 10px;
+
+}
+nav img {
+
+    width: 60px;
 }
 
 h1 {
@@ -59,23 +75,23 @@ body {
 
 
 body.dark {
-    background: #0e0d1d;
+    background: #000000;
     color: #e5e7eb;
 }
 
 
 body.dark header {
-    color: #f9fafb;
+    color: #fa2c08;
 }
 
 body.dark nav {
-    background-color: #d1d5dd;
+    background-color: #f3e9e9;
     border-radius: 6px;
 }
 
 
 body.dark a {
-    color: #60a5fa;
+    color: #000000;
 }
 
 
@@ -135,4 +151,109 @@ body.dark button {
 @keyframes blink {
     0%, 100% { opacity: 0.2; transform: scale(1); }
     50% { opacity: 1; transform: scale(1.5); }
+}
+
+body {
+  background: #f4f6f9;
+  font-family: Arial, sans-serif;
+}
+
+
+.titulo {
+  text-align: center;
+  margin-bottom: 30px;
+  color: #ffffff;
+}
+
+.cards-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 25px;
+}
+
+
+.card {
+  background: linear-gradient(135deg, #6c2496, #5900ff);
+  padding: 35px;
+  border-radius: 25px;
+  text-align: center;
+  box-shadow: 0 8px 20px rgba(255, 0, 0, 0.08);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 12px 25px rgba(230, 52, 52, 0.15);
+}
+
+
+.avatar {
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 15px;
+  background: linear-gradient(135deg, #1a2027, #9e1c88);
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.card h3 {
+  margin: 10px 0;
+  color: #ffffff;   
+}
+
+
+.card p {
+  color:    #fffdfd;
+  font-size: 16px;
+}
+
+
+.btn {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 10px 15px;
+  background: linear-gradient(135deg, #acacac, #7309ff);
+  color: rgb(241, 225, 225);
+  text-decoration: none;
+  border-radius: 8px;
+  transition: 0.3s;
+}
+
+.btn:hover {
+  opacity: 0.85;
+}
+
+
+.vazio {
+  text-align: center;
+  color: #ffffff;
+}
+
+body {
+    background: url('/static/cadastro/img/Fundo.png');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.detalhe-wrapper {
+    max-width: 600px;
+    margin: 30px auto;
+}
+
+.card-simples {
+    padding: 15px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.05);
+}
+
+.btn {
+    padding: 6px 12px;
+    border-radius: 6px;
+    text-decoration: none;
 }
