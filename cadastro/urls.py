@@ -21,4 +21,9 @@ urlpatterns = [
 
     # Rota para apagar a pessoa específica (hard delete)
     path('pessoa/<int:id>/deletar/', views.deletar, name='deletar'),
+
+    # Rota para criar conta 
+    path('cadastro/', views.register, name='register'),
+
+    path('perfil/', views.perfil, name='perfil'),
 ]

@@ -1,18 +1,43 @@
-{# cadastro\templates\cadastro\contato.html #}
+{# cadastro/templates/cadastro/contato.html #}
 
 {% extends 'cadastro/base.html' %}
 
-{% block titulo %} - Faça Contato{% endblock %}
+{% block titulo %} — Contato{% endblock %}
 
 {% block conteudo %}
+<div class="login-wrapper">
+    <div class="login-card" style="max-width: 520px;">
 
-<h2>Faça Contato</h2>
-<p>Preencha todos os campos para falar conosco.</p>
+        <div class="login-header">
+            <h2 class="login-titulo">Fale conosco</h2>
+            <p class="login-subtitulo">Preencha os campos abaixo e entraremos em contato.</p>
+        </div>
 
-<form method="POST">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Salvar</button>
-</form>
+        <form method="POST" class="login-form" novalidate>
+            {% csrf_token %}
 
+            {% for field in form %}
+            <div class="field-group">
+                <label for="{{ field.id_for_label }}" class="field-label">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                <span class="field-error">{{ field.errors|join:", " }}</span>
+                {% endif %}
+                {% if field.help_text %}
+                <span class="field-help">{{ field.help_text }}</span>
+                {% endif %}
+            </div>
+            {% endfor %}
+
+            {% if form.non_field_errors %}
+            <div class="form-error-geral">
+                {{ form.non_field_errors|join:", " }}
+            </div>
+            {% endif %}
+
+            <button type="submit" class="btn-submit">Enviar mensagem</button>
+
+        </form>
+    </div>
+</div>
 {% endblock %}

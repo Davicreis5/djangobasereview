@@ -1,115 +1,170 @@
-{# cadastro\templates\cadastro\base.html #}
+{# cadastro/templates/cadastro/base.html #}
 {% load static %}
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-br" data-theme="light">
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="{% block meta_description %}{{ sitename }}{% endblock %}">
+    <meta property="og:title" content="{{ sitename }}{% block og_title %}{% endblock %}">
+    <meta property="og:type" content="website">
+
     <title>{{ sitename }}{% block titulo %}{% endblock %}</title>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+
     <link rel="stylesheet" href="{% static 'cadastro/css/style.css' %}">
+
+    {# Fix anti-flash: aplica o tema ANTES de renderizar qualquer coisa #}
+    <script>
+        (function () {
+            if (localStorage.getItem("theme") === "dark") {
+                document.documentElement.setAttribute("data-theme", "dark");
+            }
+        })();
+    </script>
 </head>
 
 <body>
 
-    <div class="stars"></div>
+    <div class="stars-container" aria-hidden="true"></div>
 
-    
-    <hr>
+    <header class="site-header">
+        <nav class="navbar" role="navigation" aria-label="Navegação principal">
 
-    <nav>
-        <a href="{% url 'index' %}">
-        
+            <a href="{% url 'index' %}" class="nav-brand" aria-label="Ir para a página inicial">
+                <img src="{% static 'cadastro/img/logo.png' %}" alt="" width="32" height="32">
+                <span class="brand-name">{{ sitename }}</span>
+            </a>
 
-                <img src="{% static 'cadastro/img/logo.png' %}" alt="Logo" width="100"></a>
+            <ul class="nav-links" role="list">
+                <li><a href="{% url 'index' %}" class="nav-link">Início</a></li>
+                <li><a href="{% url 'contato' %}" class="nav-link">Contato</a></li>
+                {% if user.is_authenticated %}
+                <li><a href="{% url 'adicionar' %}" class="nav-link">Adicionar</a></li>
+                {% endif %}
+            </ul>
 
-        <a href="{% url 'index' %}">Início</a> |&nbsp;
-        <a href="{% url 'contato' %}">Contato</a> |&nbsp;
+            <div class="nav-actions">
+                {% if user.is_authenticated %}
+                <div class="user-chip">
+                    <div class="user-avatar" aria-hidden="true">{{ user.username|slice:":2"|upper }}</div>
+                    <a href="{% url 'perfil' %}"><span class="user-name">{{ user.username }}</span></a>
+                </div>
 
-        {% if user.is_authenticated %}
-        <a href="{% url 'adicionar' %}">Adicionar</a> |&nbsp;
-        Olá, {{ user.username }}! |
+                <form method="POST" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="btn-logout" aria-label="Sair da conta">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2.2"
+                            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                            <polyline points="16 17 21 12 16 7"/>
+                            <line x1="21" y1="12" x2="9" y2="12"/>
+                        </svg>
+                        Sair
+                    </button>
+                </form>
 
-        <form method="POST" action="{% url 'logout' %}" style="display: inline;">
-            {% csrf_token %}
-            <button type="submit">Sair</button>
-        </form>
+                {% else %}
+                <a href="{% url 'login' %}" class="btn-login">Entrar</a>
+                {% endif %}
 
-        {% else %}
-        <a href="{% url 'login' %}">Entrar</a>
-        {% endif %}
+                <button onclick="toggleTheme()" id="themeBtn" class="theme-toggle" aria-label="Alternar tema">
+                    <svg class="icon-moon" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                    </svg>
+                    <svg class="icon-sun" xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                        viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <circle cx="12" cy="12" r="5"/>
+                        <line x1="12" y1="1" x2="12" y2="3"/>
+                        <line x1="12" y1="21" x2="12" y2="23"/>
+                        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/>
+                        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                        <line x1="1" y1="12" x2="3" y2="12"/>
+                        <line x1="21" y1="12" x2="23" y2="12"/>
+                        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/>
+                        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                    </svg>
+                </button>
+            </div>
+        </nav>
+    </header>
 
-        <button onclick="toggleDarkMode()" id="themeBtn" class="theme-toggle">🌙</button>
-
-
-    
-    </nav>
-
-    <hr>
-
+    {# Mensagens de feedback do Django renderizadas como toasts #}
     {% if messages %}
-    <ul>
+    <div class="toast-container" role="alert" aria-live="polite">
         {% for message in messages %}
-        <li class="{{ message.tags }}">{{ message }}</li>
+        <div class="toast toast-{{ message.tags }}">
+            <span>{{ message }}</span>
+            <button class="toast-close" onclick="this.parentElement.remove()" aria-label="Fechar">&#x2715;</button>
+        </div>
         {% endfor %}
-    </ul>
+    </div>
     {% endif %}
 
-    <main>
+    <main class="site-main">
         {% block conteudo %}{% endblock %}
     </main>
 
-    <hr>
-
-    <footer>
+    <footer class="site-footer">
         <p>&copy; 2026 {{ dono }}</p>
     </footer>
 
     <script>
+        // ── Estrelas ──────────────────────────────────────────────────────────
         function createStars() {
-            const container = document.querySelector(".stars");
+            const container = document.querySelector(".stars-container");
             container.innerHTML = "";
-
-            for (let i = 0; i < 80; i++) {
+            for (let i = 0; i < 90; i++) {
                 const star = document.createElement("div");
                 star.classList.add("star");
-
-                star.style.top = Math.random() * 100 + "%";
-                star.style.left = Math.random() * 100 + "%";
+                star.style.top               = Math.random() * 100 + "%";
+                star.style.left              = Math.random() * 100 + "%";
                 star.style.animationDuration = (1 + Math.random() * 3) + "s";
-
+                star.style.animationDelay    = (Math.random() * 2) + "s";
                 container.appendChild(star);
             }
         }
 
-        function toggleDarkMode() {
-            document.body.classList.toggle("dark");
-
-            const btn = document.getElementById("themeBtn");
-
-            if (document.body.classList.contains("dark")) {
-                localStorage.setItem("darkMode", "on");
-                btn.innerText = "☀️";
+        // ── Tema ──────────────────────────────────────────────────────────────
+        function applyTheme(theme) {
+            document.documentElement.setAttribute("data-theme", theme);
+            localStorage.setItem("theme", theme);
+            if (theme === "dark") {
                 createStars();
             } else {
-                localStorage.setItem("darkMode", "off");
-                btn.innerText = "🌙";
-                document.querySelector(".stars").innerHTML = "";
+                document.querySelector(".stars-container").innerHTML = "";
             }
         }
 
-        window.onload = function () {
-            const btn = document.getElementById("themeBtn");
-
-            if (localStorage.getItem("darkMode") === "on") {
-                document.body.classList.add("dark");
-                btn.innerText = "☀️";
-                createStars();
-            } else {
-                btn.innerText = "🌙";
-            }
+        function toggleTheme() {
+            const current = document.documentElement.getAttribute("data-theme");
+            applyTheme(current === "dark" ? "light" : "dark");
         }
+
+        // ── Init ──────────────────────────────────────────────────────────────
+        window.addEventListener("DOMContentLoaded", function () {
+            if (document.documentElement.getAttribute("data-theme") === "dark") {
+                createStars();
+            }
+
+            // Auto-remove toasts após 5s
+            document.querySelectorAll(".toast").forEach(function (toast) {
+                setTimeout(function () {
+                    toast.style.opacity   = "0";
+                    toast.style.transform = "translateY(-10px)";
+                    setTimeout(function () { toast.remove(); }, 300);
+                }, 5000);
+            });
+        });
     </script>
 
 </body>
-
 </html>

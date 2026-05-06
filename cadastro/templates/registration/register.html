@@ -1,0 +1,56 @@
+{# cadastro/templates/registration/register.html #}
+
+{% extends 'cadastro/base.html' %}
+
+{% block titulo %} — Cadastro{% endblock %}
+
+{% block conteudo %}
+<div class="login-wrapper">
+    <div class="login-card">
+
+        <div class="login-header">
+            <h2 class="login-titulo">Crie sua conta</h2>
+            <p class="login-subtitulo">Preencha os dados para se cadastrar</p>
+        </div>
+
+        <form method="POST" class="login-form" novalidate>
+            {% csrf_token %}
+
+            <div class="field-group">
+                <label for="{{ form.username.id_for_label }}" class="field-label">Usuário</label>
+                {{ form.username }}
+                {% if form.username.errors %}
+                <span class="field-error">{{ form.username.errors|join:", " }}</span>
+                {% endif %}
+            </div>
+
+            <div class="field-group">
+                <label for="{{ form.password1.id_for_label }}" class="field-label">Senha</label>
+                {{ form.password1 }}
+                {% if form.password1.errors %}
+                <span class="field-error">{{ form.password1.errors|join:", " }}</span>
+                {% endif %}
+            </div>
+
+            <div class="field-group">
+                <label for="{{ form.password2.id_for_label }}" class="field-label">Confirmar senha</label>
+                {{ form.password2 }}
+                {% if form.password2.errors %}
+                <span class="field-error">{{ form.password2.errors|join:", " }}</span>
+                {% endif %}
+            </div>
+
+            {% if form.non_field_errors %}
+            <div class="form-error-geral">
+                {{ form.non_field_errors|join:", " }}
+            </div>
+            {% endif %}
+
+            <button type="submit" class="btn-submit">Cadastrar</button>
+        </form>
+
+        <p class="login-link">Já tem conta? <a href="{% url 'login' %}">Entrar</a></p>
+
+    </div>
+</div>
+{% endblock %}

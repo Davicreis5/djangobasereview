@@ -1,0 +1,32 @@
+{% extends 'cadastro/base.html' %}
+
+{% block titulo %} — Meu Perfil{% endblock %}
+
+{% block conteudo %}
+<div class="login-wrapper">
+    <div class="login-card">
+
+        <div class="login-header">
+            <h2 class="login-titulo">Meu Perfil</h2>
+            <p class="login-subtitulo">Suas informações de conta</p>
+        </div>
+
+        <div class="field-group">
+            <span class="field-label">Usuário</span>
+            <p>{{ request.user.username }}</p>
+        </div>
+
+
+        <div class="field-group">
+            <span class="field-label">Membro desde</span>
+            <p>{{ request.user.date_joined|date:"d/m/Y" }}</p>
+        </div>
+
+        <div class="field-group">
+            <span class="field-label">Tipo de conta</span>
+            <p>{% if request.user.is_staff %}Administrador{% else %}Usuário comum{% endif %}</p>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

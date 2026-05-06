@@ -4,20 +4,15 @@ from django.shortcuts import get_object_or_404, redirect, render
 from cadastro.forms import PessoaForm, TelefoneFormSet, ContatoForm
 from cadastro.models import Pessoa
 from django.contrib.auth.decorators import login_required
+from django.contrib.admin.views.decorators import staff_member_required  # ← NOVO
+from django.contrib.auth.forms import UserCreationForm                    # ← NOVO
+from django.contrib.auth import login                                     # ← NOVO
 from django.contrib import messages
 
 
 def index(request):
-    # Recebe todas as pessoas do banco de dados 
-    # pessoas = Pessoa.objects.all()
-
-    # Recebe todas as pessoas em ordem alfabética do nome
     pessoas = Pessoa.objects.order_by('nome')
-
-    # Total de cadastrados
     total = Pessoa.objects.count()
-
-    # Dicionário que passa dados para o template
     context = {
         'pessoas': pessoas,
         'total': total,
@@ -26,19 +21,26 @@ def index(request):
 
 
 def contato(request):
-    return render(request, 'cadastro/contato.html')
+    if request.method == 'POST':
+        form = ContatoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Contato enviado com sucesso!')
+            return redirect('contato')
+    else:
+        form = ContatoForm()
+    return render(request, 'cadastro/contato.html', {'form': form})
 
 
-@login_required
+@staff_member_required  # ← TROCADO
 def adicionar(request):
     if request.method == 'POST':
         form = PessoaForm(request.POST)
-        # instance=Pessoa() é necessário para o formset saber o pai
         formset = TelefoneFormSet(request.POST, instance=Pessoa())
 
         if form.is_valid() and formset.is_valid():
-            pessoa = form.save()             # salva e obtém o id
-            formset.instance = pessoa        # vincula os telefones à pessoa salva
+            pessoa = form.save()
+            formset.instance = pessoa
             formset.save()
             messages.success(request, 'Pessoa adicionada com sucesso!')
             return redirect('index')
@@ -57,7 +59,7 @@ def detalhe(request, id):
     return render(request, 'cadastro/detalhe.html', {'pessoa': pessoa})
 
 
-@login_required
+@staff_member_required  # ← TROCADO
 def editar(request, id):
     pessoa = get_object_or_404(Pessoa, id=id)
 
@@ -72,7 +74,7 @@ def editar(request, id):
             return redirect('detalhe', id=id)
     else:
         form = PessoaForm(instance=pessoa)
-        formset = TelefoneFormSet(instance=pessoa)  # já carrega os telefones existentes
+        formset = TelefoneFormSet(instance=pessoa)
 
     return render(request, 'cadastro/editar.html', {
         'form': form,
@@ -81,25 +83,28 @@ def editar(request, id):
     })
 
 
-@login_required
+@staff_member_required  # ← TROCADO
 def deletar(request, id):
-    # Só pode ser acessado por um usuátio autenticado
     pessoa = get_object_or_404(Pessoa, id=id)
     if request.method == 'POST':
         pessoa.delete()
         messages.success(request, 'Pessoa apagada com sucesso!')
-        return redirect('index')        
+        return redirect('index')
     return render(request, 'cadastro/deletar.html', {'pessoa': pessoa})
 
 
-def contato(request):
+def register(request):
     if request.method == 'POST':
-        form = ContatoForm(request.POST)
+        form = UserCreationForm(request.POST)
         if form.is_valid():
-            form.save()
-            messages.success(request, 'Contato enviado com sucesso!')
-            return redirect('contato')
+            user = form.save()
+            login(request, user)
+            messages.success(request, 'Conta criada com sucesso!')
+            return redirect('index')
     else:
-        form = ContatoForm()
-    return render(request, 'cadastro/contato.html', {'form': form})
+        form = UserCreationForm()
+    return render(request, 'registration/register.html', {'form': form})
 
+@login_required
+def perfil(request):
+    return render(request, 'cadastro/perfil.html')

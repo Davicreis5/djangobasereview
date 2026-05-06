@@ -1,16 +1,40 @@
-{# cadastro\templates\cadastro\deletar.html #}
+{# cadastro/templates/cadastro/deletar.html #}
 
 {% extends 'cadastro/base.html' %}
 
-{% block titulo %}Deletar {{ pessoa.nome }}{% endblock %}
+{% block titulo %} — Deletar {{ pessoa.nome }}{% endblock %}
 
 {% block conteudo %}
-    <h2>Deletar {{ pessoa.nome }}?</h2>
-    <p>Essa ação não pode ser desfeita!</p>
+<div class="login-wrapper">
+    <div class="login-card" style="max-width: 420px; text-align: center;">
 
-    <form method="POST">
-        {% csrf_token %}
-        <button type="submit">Confirmar</button>
-        <a href="{% url 'detalhe' pessoa.id %}">Cancelar</a>
-    </form>
+        <!-- Ícone de aviso -->
+        <div class="deletar-icone">
+            <svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" viewBox="0 0 24 24"
+                fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <polyline points="3 6 5 6 21 6"/>
+                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>
+                <path d="M10 11v6"/><path d="M14 11v6"/>
+                <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+            </svg>
+        </div>
+
+        <h2 class="login-titulo">Deletar {{ pessoa.nome }}?</h2>
+        <p class="login-subtitulo" style="margin-top: 8px;">
+            Essa ação é permanente e não pode ser desfeita. Todos os telefones vinculados também serão removidos.
+        </p>
+
+        <form method="POST" class="login-form" style="margin-top: 1.75rem;">
+            {% csrf_token %}
+            <div class="form-acoes">
+                <a href="{% url 'detalhe' pessoa.id %}" class="btn-cancelar">Cancelar</a>
+                <button type="submit" class="btn-deletar" style="flex: 1; border: none; cursor: pointer; font-family: var(--font-sans);">
+                    Sim, deletar
+                </button>
+            </div>
+        </form>
+
+    </div>
+</div>
 {% endblock %}
