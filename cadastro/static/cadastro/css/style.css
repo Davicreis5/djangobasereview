@@ -192,7 +192,6 @@ input:focus, textarea:focus, select:focus {
     box-shadow: 0 2px 20px rgba(0,0,0,0.25);
 }
 
-/* Linha accent azul embaixo do nav */
 .site-header::after {
     content: '';
     display: block;
@@ -237,7 +236,7 @@ input:focus, textarea:focus, select:focus {
     align-items: center;
     list-style: none;
     gap: 0;
-    flex: 1;
+    position: relative;
 }
 
 .nav-link {
@@ -249,23 +248,36 @@ input:focus, textarea:focus, select:focus {
     font-weight: 500;
     color: var(--text-nav);
     text-decoration: none;
-    border-bottom: 2px solid transparent;
     opacity: 0.7;
-    transition: opacity var(--transition), border-color var(--transition), background var(--transition);
+    transition: opacity var(--transition), color var(--transition), background var(--transition);
     letter-spacing: 0.01em;
+    position: relative;
 }
 
 .nav-link:hover {
     opacity: 1;
     background: var(--bg-nav-hover);
     color: #ffffff;
-    border-bottom-color: rgba(255,255,255,0.25);
 }
 
 .nav-link.active {
     opacity: 1;
     color: #ffffff;
-    border-bottom-color: var(--accent);
+}
+
+/* ── Indicador animado de nav ─────────────────────────────────────────── */
+
+.nav-indicator {
+    position: absolute;
+    bottom: 0;
+    height: 2px;
+    background: var(--accent);
+    border-radius: 2px 2px 0 0;
+    opacity: 0;
+    pointer-events: none;
+    transition: left 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                width 0.3s cubic-bezier(0.4, 0, 0.2, 1),
+                opacity 0.2s ease;
 }
 
 .nav-actions {
@@ -378,6 +390,108 @@ input:focus, textarea:focus, select:focus {
 [data-theme="dark"] .icon-sun  { display: block; }
 
 
+/* ── Botão hamburguer ─────────────────────────────────────────────────── */
+
+.ham-btn {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    width: 36px;
+    height: 36px;
+    background: rgba(255,255,255,0.06);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    flex-shrink: 0;
+    transition: background var(--transition);
+}
+
+.ham-btn:hover {
+    background: rgba(255,255,255,0.12);
+    transform: none;
+}
+
+.ham-bar {
+    display: block;
+    width: 16px;
+    height: 1.5px;
+    background: #e2e8f0;
+    border-radius: 2px;
+    transition: transform 0.25s ease, opacity 0.25s ease;
+    transform-origin: center;
+}
+
+.ham-btn.open .ham-bar:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+.ham-btn.open .ham-bar:nth-child(2) { opacity: 0; transform: scaleX(0); }
+.ham-btn.open .ham-bar:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
+
+/* ── Menu mobile (drawer) ─────────────────────────────────────────────── */
+
+.mobile-menu {
+    display: none;
+    max-height: 0;
+    overflow: hidden;
+    background: #111827;
+    border-top: 1px solid rgba(255,255,255,0.05);
+    transition: max-height 0.3s ease;
+}
+
+.mobile-menu.open {
+    max-height: 400px;
+}
+
+.mobile-menu ul {
+    list-style: none;
+    padding: 8px 0;
+}
+
+.mobile-link {
+    display: block;
+    padding: 13px 20px;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: #94a3b8;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    transition: background var(--transition), color var(--transition);
+}
+
+.mobile-link:hover {
+    background: rgba(255,255,255,0.04);
+    color: #e2e8f0;
+}
+
+.mobile-menu-footer {
+    padding: 8px 12px 12px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+}
+
+.mobile-logout {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    padding: 10px 14px;
+    font-family: var(--font-sans);
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #f87171;
+    background: rgba(239, 68, 68, 0.08);
+    border: 1px solid rgba(239, 68, 68, 0.2);
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    transition: background var(--transition);
+}
+
+.mobile-logout:hover {
+    background: rgba(239, 68, 68, 0.15);
+    transform: none;
+}
+
+
 /* ── Toasts ───────────────────────────────────────────────────────────── */
 
 .toast-container {
@@ -471,7 +585,6 @@ input:focus, textarea:focus, select:focus {
     overflow: hidden;
 }
 
-/* Linha accent no topo de cada card */
 .card::before {
     content: '';
     position: absolute;
@@ -627,7 +740,6 @@ button:hover {
     border: 1px solid rgba(255,255,255,0.06);
 }
 
-/* Detalhe: linha interna no topo */
 .destaque::before {
     content: '';
     position: absolute;
@@ -638,7 +750,6 @@ button:hover {
     background: rgba(255,255,255,0.1);
 }
 
-/* Decorativo: dot grid suave */
 .destaque::after {
     content: '';
     position: absolute;
@@ -670,7 +781,6 @@ button:hover {
     overflow: hidden;
 }
 
-/* Barra accent azul no topo do form card */
 .form-card::before {
     content: '';
     position: absolute;
@@ -734,7 +844,6 @@ button:hover {
     overflow: hidden;
 }
 
-/* Accent bar no topo do login card */
 .login-card::before {
     content: '';
     position: absolute;
@@ -1149,7 +1258,12 @@ button:hover {
 
     .lado-esquerdo h1 { font-size: 1.9rem; }
 
-    .nav-links { display: none; }
+    .nav-links  { display: none; }
+    .nav-indicator { display: none; }
+    .ham-btn    { display: flex; }
+    .mobile-menu { display: block; }
+    .btn-logout { display: none; }
+    .user-chip  { display: none; }
 
     .toast-container {
         right: 1rem;

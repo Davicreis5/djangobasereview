@@ -93,8 +93,47 @@
                         <line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
                     </svg>
                 </button>
+
+                {# Botão hamburguer — só aparece no mobile #}
+                <button class="ham-btn" id="hamBtn" onclick="toggleMenu()" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobileMenu">
+                    <span class="ham-bar"></span>
+                    <span class="ham-bar"></span>
+                    <span class="ham-bar"></span>
+                </button>
             </div>
         </nav>
+
+        {# Menu mobile — fica escondido por padrão #}
+        <div class="mobile-menu" id="mobileMenu" aria-hidden="true">
+            <ul role="list">
+                <li><a href="{% url 'index' %}" class="mobile-link">Início</a></li>
+                <li><a href="{% url 'contato' %}" class="mobile-link">Contato</a></li>
+                {% if user.is_authenticated %}
+                <li><a href="{% url 'adicionar' %}" class="mobile-link">Adicionar pessoa</a></li>
+                <li><a href="{% url 'perfil' %}" class="mobile-link">Perfil ({{ user.username }})</a></li>
+                {% else %}
+                <li><a href="{% url 'login' %}" class="mobile-link">Entrar</a></li>
+                {% endif %}
+            </ul>
+
+            {% if user.is_authenticated %}
+            <div class="mobile-menu-footer">
+                <form method="POST" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="mobile-logout">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24"
+                            fill="none" stroke="currentColor" stroke-width="2.2"
+                            stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                            <polyline points="16 17 21 12 16 7"/>
+                            <line x1="21" y1="12" x2="9" y2="12"/>
+                        </svg>
+                        Sair da conta
+                    </button>
+                </form>
+            </div>
+            {% endif %}
+        </div>
     </header>
 
     {# Mensagens de feedback do Django renderizadas como toasts #}
@@ -149,11 +188,28 @@
             applyTheme(current === "dark" ? "light" : "dark");
         }
 
-        // ── Init ──────────────────────────────────────────────────────────────
-        window.addEventListener("DOMContentLoaded", function () {
-            if (document.documentElement.getAttribute("data-theme") === "dark") {
-                createStars();
-            }
+        // ── Menu mobile ───────────────────────────────────────────────────────
+        function toggleMenu() {
+            const btn  = document.getElementById("hamBtn");
+            const menu = document.getElementById("mobileMenu");
+            const open = menu.classList.toggle("open");
+            btn.classList.toggle("open", open);
+            btn.setAttribute("aria-expanded", open);
+            menu.setAttribute("aria-hidden", !open);
+        }
+
+        // Fecha o menu ao clicar em qualquer link dentro dele
+        document.addEventListener("DOMContentLoaded", function () {
+            document.querySelectorAll(".mobile-link, .mobile-logout").forEach(function (el) {
+                el.addEventListener("click", function () {
+                    const menu = document.getElementById("mobileMenu");
+                    const btn  = document.getElementById("hamBtn");
+                    menu.classList.remove("open");
+                    btn.classList.remove("open");
+                    btn.setAttribute("aria-expanded", "false");
+                    menu.setAttribute("aria-hidden", "true");
+                });
+            });
 
             // Auto-remove toasts após 5s
             document.querySelectorAll(".toast").forEach(function (toast) {
@@ -163,6 +219,10 @@
                     setTimeout(function () { toast.remove(); }, 300);
                 }, 5000);
             });
+
+            if (document.documentElement.getAttribute("data-theme") === "dark") {
+                createStars();
+            }
         });
     </script>
 
